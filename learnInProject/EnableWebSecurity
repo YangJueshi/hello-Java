@@ -1,0 +1,9 @@
+EnableWebSecurity
+
+在Spring boot应用中使用Spring Security，用到了EnableWebSecurity注解。
+该注解和@Configuration注解一起使用，注解WebSecurityConfigurer类型的类，或者利用@EnableWebSecurity注解继承了WebSecurityConfigurerAdapter的类，这样就构成了Spring Security的配置。
+
+WebSecurityConfigurerAdapter提供了一种便利的方式去创建WebSecurityConfigurer的实例，只需要重写WebSecurityConfigurerAdapter的方法，即可配置拦截什么URL、设置什么权限等安全控制。
+
+
+Spring secuity是控制URL的访问权限的，它的拦截匹配URL首先需要一个接口RequestMatcher。这个接口下面定义了一个matches方法，如果返回时true，表示提供的请求与提供的匹配规则匹配，如果返回的是false，则不匹配。
