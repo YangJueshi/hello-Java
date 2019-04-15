@@ -1,0 +1,4 @@
+spring-boot-configuration-processor
+
+
+	对于一个实体类，想把部分属性作为配置来实现。可以使用@ConfigurationProperties注解，详见springboot注解页
