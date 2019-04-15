@@ -1,0 +1,58 @@
+入口类和配置文件
+
+	1. springboot是通过一个启动类来进行项目的运行的
+	2. 这个启动类上面有注解@SpringBootApplication，这个注解其实是一个组合注解：
+	@Target({ElementType.TYPE}) 
+	@Retention(RetentionPolicy.RUNTIME) 
+	@Documented 
+	@Inherited 
+	@SpringBootConfiguration ====>表明这个类是一个配置类
+	@EnableAutoConfiguration ====>表示让Spring Boot根据类路径中的jar包依赖为当前项目进行自动配置
+	@ComponentScan(                ====>定义扫描的路径，从中找出标识了需要装配的类的自动装配到srpring的bean容器中
+		【ComponentScan详解：@Controller，@Service，@Repository注解，查看其源码你会发现，他们中有一个共同的注解@Component，没错@ComponentScan注解默认就会装配标识了@Controller，@Service，@Repository，@Component注解的类到spring容器中】
+		[更详细的信息http://blog.51cto.com/4247649/2118342]
+		
+		excludeFilters = {@Filter( 
+		type = FilterType.CUSTOM, 
+		classes = {TypeExcludeFilter.class} )} 
+	
+	) 
+	public @interface SpringBootApplication { 
+	
+	}
+	使用了springbootapplication注解的话，系统会去入口类的同级包以及下级包中去扫描实体类，所以我们的入口类是写在根路径下。
+	3. springboot使用一个全局的配置文件application.properties或者.yml，放在main/resources目录下。
+	【常规属性配置】
+		a. 在文件中定义某个属性值，然后在代码中直接使用@Value注入即可
+		Eg:  配置中：book.author=罗贯中
+		       代码中：
+				@Value(value = "${book.author}")
+private String bookAuthor;
+		因为在配置中我们使用了中文，所以需要对中文进行相关处理
+		server.tomcat.uri-encoding=UTF-8 
+		spring.http.encoding.charset=UTF-8 
+		spring.http.encoding.enabled=true 
+		spring.http.encoding.force=true 
+		spring.messages.encoding=UTF-8
+	4. /**
+	*进行全局配置，我们的工作量略大，所以我们使用基于类型安全的配置方式，就是将properties属性和一个bean关联在一起
+	*Eg:
+	*比如上面的罗贯中，book类下面，所以我们在resources中创建一个book.properties文件，里面也写上一样的内容。再创建一个Book Bean类，并注入properties文件中的值
+	*@Component 
+	*@ConfigurationProperties(prefix = "book",locations = "classpath:book.properties") ===》prefix：前缀
+	*public class BookBean { 
+		private String name; 
+		private String author;
+		private String price; 
+		Get/set方法…
+	*}
+	*再在controller中autowired相关bean。
+	**/
+	5. 日志配置
+	默认情况下，springboot使用Logback作为日志框架【详细见后面笔记】，这里只需要进行相关配置
+	logging.file=/home/sang/workspace/log.log
+logging.level.org.springframework.web=debug
+	标识日志输出位置和日志级别
+	6. Profile配置问题
+	在springboot中全局profile我们使用application-{profile}.properties来定义，然后在application.properties中通过spring.profile.active来制定使用哪个profile。比如我们dev这个profile，我们设定之后表示使用开发环境下的配置，然后运行项目，我们就需要通过dev中配置的port端口号来进行访问。
+	例如：1、在service层中，我们对不同的service实现类打上注解@Profile(value="prod")，那么这个实现类只能在prod的profile下注入相对应的实现类。2、对于domain，我们打上注解@ConfigurationProperties("profile.test"),@Component[这个注解指把类化到spring容器中，相当于配置文件中的<bean id="" class=""/>]；然后我们在profile文件中配置profile.test.yy=xxx。这样就可以将xxx值赋值给domain中对应的yy上
