@@ -1,0 +1,28 @@
+AOP之请求日志
+
+==以控制台输出每个客户端请求的详细信息为例展示AOP的便利之处==
+
+1、 首先pom中添加依赖
+
+2、 创建一个切面类，在上面打上注解@Aspect[表示该类是一个横切类]  @Component[bean处理]
+
+					
+
+	类里写方法，上面打上注解@Pointcut("execution(public * com.zyr.demo.controller..*.*(..))")
+	
+			
+	
+	@Pointcut：表示切入的地方，括号内execution的括号中表示com.zyr.demo.controller包中的所有public方法；
+		logRequest()：由@Pointcut表示该方法即为上文提到的事A，方法名自定义，方法体内为空，表示该方法单纯指定切入点，具体内容在引用它的地方写，如下面的doBefore和doAfterReturning；
+		
+	
+			
+	
+	@Before：括号中引用了上面的logRequest()，表示该方法的切入点与它相同，@Before表示在被切入的方法开始执行前，需要先执行该方法体内的代码，此处即为打印请求信息，方法名自定义；
+	
+	
+			
+	
+	@AfterReturning：括号中的object必须与方法的参数名相同，表示被切入的方法的返回值。pointcut即同上，表示切入点与logRequest()的切入点相同，@AfterReturning表示在被切入的方法返回值时，执行该方法中的内容；
+	
+	除了@Before和@AfterReturning，还有@After、@AfterThrowing、@Around等切入方式。
