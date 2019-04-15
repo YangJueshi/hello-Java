@@ -1,0 +1,24 @@
+RedisTemplate操作redis
+
+
+	spring封装了RedisTemplate对象来进行对redis的各种操作，它支持所有的redis原生的api。
+	
+	RedisTemplate在java中的结构是：RedisTemplate<K,V>，k通常是String类型。
+	
+	RedisTemplate中定义了对五种数据结构操作：
+		redisTemplate.opsForValue();//操作字符串
+		redisTemplate.opsForHash();//操作hash 
+		redisTemplate.opsForList();//操作list 
+		redisTemplate.opsForSet();//操作set 
+		redisTemplate.opsForZSet();//操作有序set
+		
+	StringRedisTemplate继承了RedisTemplate，但是他们各自管理各自的数据。
+
+Jedis和RedisTemplate的区别
+
+
+	Jedis是Redis官方推荐的面向Java的操作Redis的客户端
+	RedisTemplate是SpringDataRedis中对JedisApi的高度封装
+	
+	SpringDataRedis相对于Jedis来说可以方便的更换Redis的Java客户端，比Jedis多了自动管理连接池的特性，方便与其他Spring框架进行搭配使用如：SpringCache
+	
