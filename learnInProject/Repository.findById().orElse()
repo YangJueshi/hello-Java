@@ -1,0 +1,12 @@
+Repository.findById().orElse()
+
+
+	Spring-data-jpa从1.12版本开始，JpaRepository继承的接口由之前的CrudRepository，PagingAndSortingRepository改为了QueryByExampleExecutor，PagingAndSortingRepository。变化就是标黄的接口发生改变。
+	
+	QueryByExampleExecutor接口用了Java 1.8增加的Optional来解决了空指针的问题。从而导致JpaRepository中例如T findOne(ID id);修改为了Optional<S> findOne(Example<S> example);
+	
+	参数和返回值都发生了变化。
+	
+	因此以前只需要调用findOne方法就能查询到一条数据，现在需要首先将参数封装为一个Example在进行传参，同时返回了Optional类。
+	关于Optional的几种用法:
+		orElse()      orElseGet()       ifPresent()
