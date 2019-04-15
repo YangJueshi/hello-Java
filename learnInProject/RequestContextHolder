@@ -1,0 +1,3 @@
+RequestContextHolder
+
+	springboot通过RequestContextHolder获取HttpRequest和HttpResponse或者session
