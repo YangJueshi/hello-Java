@@ -1,0 +1,42 @@
+创建jedis、持久化、数据结构
+
+		         https://blog.csdn.net/liqingtx/article/details/60330555
+	创建jedis：
+		private static Jedis jedis = new Jedis("127.0.0.1", 6379);
+	
+	
+	应用场景：
+		会话缓存(常用)、消息队列(比如支付)、活动排行榜或计数、发布订阅消息(消息通知)、商品列表评论列表等
+		https://blog.csdn.net/lirongqian123/article/details/79370324  使用示例
+		
+	redis持久化的简单介绍：
+		RDB：在不同的时间点，将redis存储的数据生成快照并存储到磁盘等介质上
+		
+						
+		AOF：将redis执行过的所有写指令记录下来，在下次redis重启时，只要把这些指令从前到后再重复执行一遍就可以实现数据恢复。
+		
+						
+		
+		[两者都有相关配置文件的设置]
+		
+	redis的数据结构：
+	
+	string：由于INCR等指令本身就具有原子操作的特性，所以我们完全可以利用redis的INCR、INCRBY、DECR、DECRBY等指令来实现原子计数的效果，假如，在某种场景下有3个客户端同时读取了mynum的值（值为2），然后对其同时进行了加1的操作，那么，最后mynum的值一定是5。不少网站都利用redis的这个特性来实现业务上的统计计数需求。
+	
+	redis的一个重要的数据结构叫lists，底层实现是链表，因此对于元素的添加速度跟数据量无关，但是如此一来元素定位会比较慢。lists的常用操作包括：LPUSH\RPUSH\LRANGE等
+	lists的应用：
+		实现消息队列，确保先后顺序；利用LRANGE实现分页的功能（lrange list 0 -1 表示列出list中从编号0到倒数第一个元素）；博客系统中的评论数可以存入一个单独的list中。
+	集合：是一种无序的集合，集合中的元素没有先后顺序。
+	集合的应用：qq中的社交功能“好友标签”
+	zsets：其实是一个有序集合(sorted sets)，每个元素都关联一个序号score，这便是排序的依据。因为这个集合的操作命令都是以z大头，所以才叫做zsets
+	hashes：存的是字符串和字符串值之间的映射，比如一个用户要存名字、密码、年龄等，操作如下：
+			HMSET user:001 username antirez password P1pp0 age 34 
+			列出内容：HGETALL user:001
+				1) "username"
+				2) "antirez"
+				3) "password"
+				4) "P1pp0"
+				5) "age"
+				6) "34"
+
+			
