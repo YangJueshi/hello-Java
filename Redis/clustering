@@ -19,3 +19,17 @@ Jedis连接集群版Redis：
 
 在公司微服务代码中看到配置工厂 package com.msl.common.utilities.redis; ，查到类似的文件： https://blog.csdn.net/qq_37580283/article/details/80941762
 但是公司貌似没有用redis集群？？？
+
+springboot整合集群
+
+	https://blog.csdn.net/u010199866/article/details/80705797
+	
+	
+	
+	
+	
+	1、 在创建了springboot框架之后，引入相关依赖
+	2、 在yml文件中进行相关配置(地址、端口、连接池信息等)，最好在设置密码
+	3、 创建一个对象来装yml中配置的值
+	4、 创建JedisClusterConfig来注入3的对象，创建方法读取配置信息(将多个端口地址划分之后来创建JedisCluster并返回)
+	5、 创建一个service层类，里面注入4的对象，调用方法获取jedisCluster，调用set、get方法来进行redis的操作。
