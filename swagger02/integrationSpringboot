@@ -1,0 +1,58 @@
+	方法一：
+使用swagger-spring-boot-starter
+	引入依赖
+	
+	
+	
+	直接在启动类上面打上注解@EnableSwagger2Doc
+	
+	再进行相关配置
+	
+	
+	
+	相关配置说明：
+	
+	
+	Path设置
+	
+	
+
+
+方法二：
+		在pom中添加依赖
+		
+		
+		
+		创建Swagger的配置文件SwaggerCondiguration
+		https://yq.aliyun.com/articles/622789?spm=a2c4e.11163080.searchblog.50.61802ec1WtYT2C
+		
+		@Configuration
+		@EnableSwagger2
+		public class SpringfoxConfig {
+		    @Bean
+		    public Docket createRestApi() {
+		        return new Docket(DocumentationType.SWAGGER_2)
+		                .apiInfo(apiInfo())
+		                .select()
+		                .apis(RequestHandlerSelectors.basePackage("com.example.demo.controller"))
+		                .paths(PathSelectors.any())
+		                .build();
+		    }
+		
+		    private ApiInfo apiInfo() {
+		        return new ApiInfoBuilder()
+		                .title("Yang`s Swagging test")
+		                .description("这是我对于Swagger的测试")
+		                .termsOfServiceUrl("http://127.0.0.1:8080/")
+		                .contact(new Contact("MichelleYang", "http://127.0.0.1:8080/", "123@qq.com"))
+		                .version("1.0")
+		                .build();
+		    }
+		
+		}
+		
+		apiInfo()配置一些基本的信息   apis()指定扫描的包会生成文档
+		
+		在controller上打上相应注解
+		
+		然后启动项目，访问localhost:8080/swagger-ui.html就可以了
