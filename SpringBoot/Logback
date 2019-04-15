@@ -1,0 +1,25 @@
+Logback介绍
+
+	1. 我们常见的日志框架有Java Util Loggin，Log4j，Logback。springboot中使用logback
+	2. 默认情况下，springboot的日志级别只有ERROR,WARN,INFO。如果需要debug级别，那么就要在properties中配置debug=true
+	3. <dependencies>
+	    <dependency>
+	      <groupId>ch.qos.logback</groupId>
+	      <artifactId>logback-classic</artifactId>
+	      <version>1.2.3</version>
+	      <scope>compile</scope>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.apache.logging.log4j</groupId>
+	      <artifactId>log4j-to-slf4j</artifactId>
+	      <version>2.10.0</version>
+	      <scope>compile</scope>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.slf4j</groupId>
+	      <artifactId>jul-to-slf4j</artifactId>
+	      <version>1.7.25</version>
+	      <scope>compile</scope>
+	    </dependency>
+	4. 详细信息参考 https://www.cnblogs.com/lixuwu/p/5804793.html
+	5. 官方对于xml的名字格式为logback-spring.xml，因为带spring后缀的可以使用<springProfile>这个标签
