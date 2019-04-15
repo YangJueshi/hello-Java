@@ -1,0 +1,88 @@
+lambda表达式
+
+-> 这个操作符被称为Lambda操作符，它把表达式分为了左右两部分，左边是lambda中所使用的参数列表；右边是lambda所要执行的操作。
+
+示例一：声明一个runnable接口，输出hello
+	Runnable run = () -> System.err.println("hello");
+	run.run();
+
+示例二：有参数，无返回值
+	Consumer<String>  con1 = (String str) -> {
+		System.err.println(str);
+	}
+	con1.accept("hello con1");
+	
+	Consumer<String>  con2 =  str -> System.err.println(str);
+	con2.accept("hello con2");
+	
+示例三：有参数(多个)，有返回值
+	BiFunction<Integer, Integer, String> bi = (x, y) -> "x + y = " + (x + y);
+	String result = bi.apply(10, 15);
+	System.err.println(result );
+	-------------------------------------
+	x + y = 25
+	
+lambda表达式可以访问给它传递的变量，访问自己内部定义的变量，同时也能访问它外部的变量。外部变量引用不可变。
+
+lambda中的this指的是声明它的外部对象：
+	public class WhatThis {
+	     public void whatThis(){
+	           //转全小写
+	           List<String> proStrs = Arrays.asList(new String[]{"Ni","Hao","Lambda"});
+	           List<String> execStrs = proStrs.stream().map(str -> {
+	                 System.out.println(this.getClass().getName());
+	                 return str.toLowerCase();
+	           }).collect(Collectors.toList());
+	           execStrs.forEach(System.out::println);
+	     }
+	
+	     public static void main(String[] args) {
+	           WhatThis wt = new WhatThis();
+	           wt.whatThis();
+	     }
+	}
+		-------------------------------------输出：
+		com.wzg.test.WhatThis
+		com.wzg.test.WhatThis
+		com.wzg.test.WhatThis
+		ni
+		hao
+		lambda
+
+
+
+===============================
+构造器引用：
+ClassName :: New
+
+Stream语法:
+可以把Stram当成装饰后的Iterator
+
+
+图片就是对于Stream例子的一个解析，可以很清楚的看见：原本一条语句被三种颜色的框分割成了三个部分。红色框中的语句是一个Stream的生命开始的地方，负责创建一个Stream实例；绿色框中的语句是赋予Stream灵魂的地方，把一个Stream转换成另外一个Stream，红框的语句生成的是一个包含所有nums变量的Stream，进过绿框的filter方法以后，重新生成了一个过滤掉原nums列表所有null以后的Stream；蓝色框中的语句是丰收的地方，把Stream的里面包含的内容按照某种算法来汇聚成一个值，例子中是获取Stream中包含的元素个数。
+
+如何得到Stream
+	1. 通过Stream接口的静态工厂方法(Java8里接口可以带静态方法)；
+	2. 通过Collection接口的默认方法(默认方法：Default method，也是Java8中的一个新特性，就是接口中的一个带有实现的方法)
+
+转换Stream：其实就是把一个Stream通过某些行为转换成一个新的Stream。
+	1. distinct： 去重
+	2. filter： 使用给定的过滤函数进行过滤操作
+	3. map： 使用给定的转换函数进行转换操作，新生成的Stream值包含转换生成的元素
+
+			
+
+
+
+	4. flatMap：和map类似，不同的是其每个元素转换得到的是Stream对象 ，会把子Stream中的元素压缩到父集合中。
+	5. peek： 生成一个包含原Stream的所有元素的新Stream，同时会提供一个消费函数(Consumer实例)，新Stream每个元素被消费的时候都会执行给定的消费函数
+	6. limit： 获取前n个元素，如果长度不够，就直接获取所有元素
+	7. skip： 丢弃前面n个元素，获取后面的，如果长度不够，返回空Stream
+
+
+汇聚Stream
+	1. 可变汇聚:collect
+	把输入的元素们累计到一个可变的容器中，比如Collection、StringBuilder
+	2. 其他汇聚
+	reduce： System.out.println("ints sum is:" + ints.stream().reduce(0, (sum, item) -> sum + item));sum是结果返回值，item是Sream中的各个元素，0表示如果stream为空时的返回默认值
+	count： 获取Stream中元素的个数。
