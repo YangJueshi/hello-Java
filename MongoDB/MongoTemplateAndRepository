@@ -1,0 +1,35 @@
+	MongoTemplate
+
+MongoTemplate是数据库和代码之间的接口，对数据库的操作都在它里面。是线程安全的。
+	
+	MongoTemplate实现了interface MongoOperations
+	MongoDB document和domain classes之间的映射关系是通过实现了MongoConverter这个interface的类来实现的
+	MongoTemplate提供了非常多的操作MongoDB的方法。可以在多线程的情况下使用
+	MongoTemplate实现了MongoOperations接口，此接口定义了众多的操作方法如"find"\"findAndModify"\"findOne"\"insert"\"remove"\"save"\"update"\"updateMulti"等
+	MongoTemplate转换domain object为DBObject，缺省转换类为MongoMappingConverter，并提供了Query，Criteria，Update等流式API
+	
+	MongoTemplate核心操作类:
+		Criteria类：封装所有的语句，以方法的形式查询
+		Query类：将语句进行封装或者添加排序之类的操作
+
+MongoRepository
+
+
+	repository可以翻译为资源库，简单来说，我们可以将数据库的crud操作抽象为一个公共的接口或者类，派生的子类都会继承这些方法
+	
+	Spring Data： 是第一个Spring的子项目。用于简化数据库访问。
+		支持的NoSQL存储：
+			MongoDB、Neo4j、Redis、Hbase
+		支持的关系数据：
+			JDBC、JPA
+			
+	Spring Data可以让我们只定义接口，只要遵循Spring Data的规范，就无需写实现类。
+	Repository提供了最基本的数据访问功能，其几个子接口则扩展了一些功能，他们的继承关系如下：
+		Repository：仅仅是一个标识，表明任何继承他的均为仓库接口类
+		CrudRepository：继承Repository，实现了一组CRUD相关的方法
+		PaginAndSortingRepository：继承CrudRepository，实现了一组分页排序相关的方法
+		MongoRepository：继承PaginAndSortingRepository，实现一组mongodb规范相关的方法
+		
+	自定义的XXXRepository需要继承MongoRepository，这样的接口就具备了通用的数据访问控制层的能力。
+	
+	MongoRepository的缺点是不够灵活，MongoTemplate正好可以弥补不足。
