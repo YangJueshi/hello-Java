@@ -1,0 +1,34 @@
+Kafka
+
+
+	 https://blog.csdn.net/lingbo229/article/details/80761778
+	
+	分布式、支持分区的、多副本的、基于zookeeper协调的分布式消息系统。
+	
+	topic>partition>segment
+	
+	kafka的特性：
+		高吞吐量、低延迟(kafka每秒可以处理几十万条消息)，可扩展性(kafka集群支持热扩展)，持久性、可靠性(消息被持久化到本地磁盘，并且支持数据备份防止数据丢失)，容错性(允许集群中节点失败)，高并发(支持数千个客户端同时读写)。
+	kafka的使用场景：
+		日志收集、消息系统、用户活动跟踪、运营指标、流式处理(如spark streaming和storm)、事件源。
+	kafka的设计思想：
+		Kafka broker集群被zookeeper管理，全部去zookeeper上注册临时节点，但是只有一个会成功，成功的这个叫Kafka broker controller,其他的叫Kafka broker follower(这个过程叫controller在zookeeper注册watch)。
+		
+	kafka为了保证吞吐量，只允许同一个consumer group下的一个consumer线程去访问一个partition。如果觉得效率不高的时候，可以加partition的数量来横向扩展，那么再加新的consumer thread去消费。如果想多个不同的业务都需要这个topic的数据，起多个consumer group就好了，大家都是顺序的读取message，offsite的值互不影响。这样没有锁竞争，充分发挥了横向的扩展性，吞吐量极高，这也就形成了分布式消费的概念。
+	
+	当启动一个consumer group去消费一个topic的时候，无论topic里面有多少个partition，无论我们consumer group里面配置了多少个consumer thread，这个consumer group下面的所有consumer thread 一定会消费全部的partition。所以最有的设计就是，consumer group下的consumer thread的数量等于partition数量，这样效率最高。
+	
+	我们线上的分布式多个service服务，每个service里面的kafka consumer数量都小于对应的topic的partition数量，但是所有服务的consumer数量之和等于partition的数量，这是因为分布式service服务的所有consumer都来自一个consumer group，如果来自不同的consumer group就会处理重复的message了。
+	如果producer的流量增大，当前的topic的partition数量=consumer数量，这时候的对应方式就是横向扩展：增加topic下的partition，同时增加这个consumer group下的consumer。
+	
+	对于kafka0.8x而言，kafka提供了一个matadataAPI来管理broker之间的负载，对于0.7x主要靠zookeeper来实现负载均衡。
+	
+	对于producer发送消息，可以选择异步发送，先将多条消息在客户端buffer起来，并批量发送到broker上，提升了网络效率，但是当producer失效时，那些尚未发送的消息将会丢失。
+	
+	producer端使用zookeeper用来发现broker列表，以及和topic下每个partition leader建立socket连接并发送消息
+	broker端使用zookeeper用来注册broker信息，以及检测partition leader存活性
+	consumer端使用zookeeper用来注册consumer信息，其中包括consumer消费的partition列表等，同时也用来发现broker列表，并和partition leader建立socket连接并获取消息。
+	2.3 topic中partition存储分布<未看>
+	From <https://blog.csdn.net/lingbo229/article/details/80761778> 
+	
+	
