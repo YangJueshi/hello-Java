@@ -1,0 +1,28 @@
+基本操作
+
+1、 dual：伪表，补全语法结构
+2、 select nvl(null,6) from dual; -- 6 
+	nvl若参数1为null，则返回参数2，否则返回参数1
+3、 like：模糊查询，%匹配任意个数字符，_匹配单个字符，escape '' 指定引号里的字符做为转义符
+4、 条件表达式:【通过这个写法可以直接在sql语句中将数值转换成我们需要的数据】
+	通用写法:
+	        case 列
+	          when 值1 then 输出
+	          when 值2 then 输出
+	          when 值3 then 输出    
+	          else
+			… …
+	          end;
+	Oracle特有的写法:
+	          decode(列名,if1,then1,if2,then2,default)
+5、 左右外链接 left outer join..on..
+6、 在嵌套查询中，对于子查询出来的结果是多行子查询结果，即结果有多行，
+	那么需要操作符：in  any  all  exists
+	-- 查询所有是领导的员工信息
+	select * from emp where empno =any(select distinct mgr from emp)
+	-- 查询所有不是领导的员工信息
+	-- 注意:子查询中的空值问题
+	select * from emp where empno not in(select distinct mgr from emp where mgr is not null);
+	select * from emp where empno != all(select distinct mgr from emp where mgr is not null);
+	Exists：表示存在的意思。若子查询结果存在，那么结果返回true；结果不存在，结果返回false
+7、 给rownum起别名，嵌套查询来进行大于的查询
