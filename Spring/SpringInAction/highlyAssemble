@@ -1,0 +1,36 @@
+二、Spring的高级装配
+	1. 环境与profile
+	不同的环境下，某些配置会进行相应的改变。
+	2. 条件化的bean
+	希望某个bean只有在特定的条件下才创建。
+	3. 处理自动装配的歧义性
+	一个借口有三个实现类，都创建了bean交给了spring管理，在注入时注入的是父类接口，此时spring报错，无法精确到准确的bean。解决方案一般有两种：将可选bean中的某一个设为首选的bean；使用限定符来帮助spring将可选的bean的范围缩小到只有一个bean
+======================================================
+1、环境与profile
+Spring提供了bean profile的功能。
+要使用profile，首先要将所有不同的bean定义整理到一个或多个profile中，在将应用部署到每个环境时，要确保对应的profile处于激活(active)的状态。
+
+配置：
+	a. Java配置中，在config上注解@Profile("dev")指定为dev环境，它会告诉Spring这个配置类中的bean只有在devprofile激活时才会创建。在Spring3.1中，只能在类级别上使用，在3.2开始，可以用在方法级别上。这样就可以在一个配置类中，写两个环境下的bean。
+	b. XML配置中，通过<beans>元素的profile属性，可以声明在文件头里profile="dev"，也可以声明在每一个bean中<bean profile="dev" >…</bean>
+
+激活：
+	Spring依赖两个属性来确定profile的激活：spring.profiles.active/spring.profiles.default，如果两者均没有设置值，只会创建没有定义profile的bean。
+	两个属性的设置方式：
+		作为DispatcherServlet的初始化参数
+		作为Web应用的上下文参数
+		作为JNDI条目
+		作为环境变量
+		作为JVM的系统属性
+		在集成测试类上，使用@ActiveProfiles("哪种环境")注解设置
+======================================================
+2、条件化的bean
+	Spring4引入了@Conditional注解，用在带有@Bean的方法上，如果注解里的条件结果为true，就会创建这个bean，否则，这个bean就被忽略。
+	注解里的条件为一个Class，它指明了条件在指定的类中。
+	从Spring4开始，@Profile注解进行了重构，查看源码可以看到，Profile注解上的条件注解有@Conditional(ProfileCondition.class)。说明@Profile本身也是用了@Conditinal注解，并且引用ProfileConditional作为Condition实现，ProfileCondition实现了Condition(后面省略)
+======================================================
+3、处理自动装配的歧义性
+	1. 标示首选的bean
+	@Primary注解用在配置bean上，或者在XML配置中bean元素中有primary属性设置为true。
+	2. 限定自动装配的bean
+	@Qualifier注解用在注入bean上，里面的值输入想要注入的确定的子类。
