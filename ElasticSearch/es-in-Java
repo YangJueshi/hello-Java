@@ -1,0 +1,44 @@
+java操作es
+
+	1. maven依赖
+		  java代码
+	java操作ES集群步骤 
+	①配置集群对象信息 
+	②创建客户端 
+	③查看集群信息
+	【相关代码查看上面链接】
+
+ElasticsearchRepository
+
+特殊情况下，ElasticsearchRepository里面有几个特殊的search方法，这些是ES特有的，和普通的JPA区别的地方，用来构建一些ES查询。
+
+
+
+
+从这个关系中可以看到ES的search方法需要的参数SearchQuery是一个接口，有一个实现类叫NativeSearchQuery，实际使用中个，我们的主要任务就是构建NativeSearchQuery来完成一些复杂的查询的
+https://blog.csdn.net/tianyaleixiaowu/article/details/76149547/
+
+https://blog.csdn.net/tianyaleixiaowu/article/details/77965257
+
+https://blog.csdn.net/u011781521/article/details/77848489
+
+
+ElasticSearchRepository和ElasticSearchTemplate区别
+
+JPA中有个ElasticsearchRepository可以做Elasticsearch的相关增删改查，用法和普通的CRUDRepository是一样的，这样就能统一ElasticSearch和普通的JPA操作，获得和操作mysql一样的代码体验。但是同时可以看到ElasticsearchRepository的功能是比较少的，简单查询够用，但复杂查询就不够了。
+
+而ElasticsearchTemplate则提供了更多的方法来完成更多的功能，也包括分页之类的，他其实就是一个封装好的ElasticSearch Util功能类，通过直接连接client来完成数据的操作。
+
+
+使用elasticsearchTemplate的java代码
+	term是代表完全匹配，也就是精确查询，搜索前不会再对搜索词进行分词，所以我们的搜索词必须是文档分词集合中的一个 
+	TermsBuilder:构造聚合函数
+	 AggregationBuilders:创建聚合函数工具类
+	 BoolQueryBuilder:拼装连接(查询)条件 
+	QueryBuilders:简单的静态工厂”导入静态”使用。主要作用是查询条件(关系),如区间\精确\多值等条件 
+	NativeSearchQueryBuilder:将连接条件和聚合函数等组合 
+	SearchQuery:生成查询 
+	elasticsearchTemplate.query:进行查询 
+	Aggregations:Represents a set of computed addAggregation.代表一组添加聚合函数统计后的数据 
+	Bucket:满足某个条件(聚合)的文档集合
+
