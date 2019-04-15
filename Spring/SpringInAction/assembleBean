@@ -1,0 +1,65 @@
+一、Spring装配bean的三种方式
+	1. 在XML中进行显式配置
+	2. 在Java中进行显式配置
+	3. 隐式的bean发现机制和自动装配
+	
+三种方式都能混合使用。
+JavaConfig中引用另一个JavaConfig配置，添加注解@Import({a.class,b.class})
+JavaConfig中引用XML配置，添加注解@ImportResource("classpath:ccc.xml")
+XML中引用另一个XML，<import resource="ddd.xml" />
+XML中引用JavaConfig，<bean class="ddd.eeeConfig" />
+=============================================================================
+1.  在XML中进行显式配置
+(xml的配置不是唯一选择，目前建议使用后两者方式)
+创建一个XML文件，并且要以<beans>元素为根
+	<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+		内容
+	</beans>
+在里面声明一个bean
+	<bean class="全限定类名" />
+创建的bean将会根据全限定类名来进行命名，如果声明了两个相同类型的bean，那么它得到的ID将在全限定类名后面加#0。通常我们在bean的创建中加入id属性设置一个名字。
+借助构造器注入初始化bean：
+	在XML中声明DI是，有两种基本的配置方案可供选择：
+		a. <constructor-arg>元素
+		在声明bean的配置中，<constructor-arg ref="注入的bean的ID" />
+		b. 使用Spring3.0所引用的c-命名空间
+		必须要在顶部声明其模式： xmlns:c="http://www.springframework.org/schema/c"
+		在声明对象的bean里面增加一个属性 c:构造器参数名-ref="注入的bean的ID"
+		构造器参数名还有替换方案：1、使用参数在整个参数列表中的位置信息，0、1、2，因为在XML中不允许数字作为属性的第一个字符，因此必须添加一个下划线作为前缀_0\_1\_2…
+							   2、如果只有一个构造器参数，连数字都不需要
+							[1、如果注入的参数是常量，那么a中将ref改为value，或者b中c:_字段名=""，c:_0=""
+							 2、如果注入list，那么将a修改为：
+								<constructor-arg>
+									<list>
+										<value>不加引号的值</value>
+										<ref bean="注入的bean的ID" />
+									</list>
+								</constructor-arg>
+							]
+设置属性 类里的一个属性是另一个对象，那么可以在XML中进行如此声明：
+		<bean id="" class="">
+			<property name="" ref="声明的另一个bean" />
+		</bean>
+		第二种方案就是p-命名空间，也需要首先进行xmlns的声明，然后装配写法：p:属性名-ref=""
+		property也有value属性来设置值，用来进行字面量注入到属性中。
+		需要注意的是，我们不能使用p-命名空间来装配集合，我们使用Spring util-命名空间中的一些功能来简化集合，首先也是要在XML中声明，其次util-提供了<util:list>元素：
+			<util:list id="">
+				<value>***</value>
+			</util:list>
+			这是声明了一个list的bean，之后当做属性进行注入时：p:tracks-ref="上面list的id值"
+
+=============================================================================
+2.  在Java中进行显式配置
+在config类上打注解@Configuration，在类中声明bean，方法上添加注解@Bean，该注解会告诉Spring这个方法将会返回一个对象，该对象要注册成为Spring应用上下文中的bean。
+=============================================================================
+3.  隐式的bean发现机制和自动装配
+实现：组件扫描(component scanning)、自动装配(autowiring)
+示例：
+创建一个类之后，在类上打注解@Component，使用这个注解，Spring会为这个类创建bean，不过，自检扫描默认是不启用的，还需要显式的配置一下spring：
+	创建一个空config类，上面打注解：@Configuration @ComponentScan 通过java代码定义了Spring的装配规则；
+	或者使用XML来启用组件扫描：<context:component-scan base-package="包名"/>
