@@ -1,0 +1,47 @@
+Feign[声明web服务客户端]
+
+feign是一个声明web服务客户端，使用feign创建一个接口并对它进行注解。在RestTemplate的基础上对其封装
+
+在启动类上打上@EnableFeignClients注解开启feign功能
+定义服务接口类UserClient.java，使用@FeignClient("xx-service-xx")注解来绑定该接口对应xx-service-xx服务
+在web层中调用定义的UserController，具体如下:
+	@RestController
+	public class UserController {
+	 
+	    @Autowired
+	    UserClient userClient;
+	 
+	    @RequestMapping(value = "/getuserinfo", method = RequestMethod.GET)
+	    public User getuserinfo() {
+	        return userClient.getuserinfo();//这里调用创建好的方法
+	    }
+	     
+	    @RequestMapping(value = "/getuserinfostr", method = RequestMethod.GET)
+	    public String getuserinfostr() {
+	        return userClient.getuserinfostr();
+	    }
+	     
+	    @RequestMapping(value = "/info", method = RequestMethod.GET)
+	    public String info() {
+	        return userClient.info();
+	    }
+	 
+	 
+	}
+在properties中配置变量，设置端口号，并访问
+
+对于服务提供者
+	
+	里面有service的接口和实现类。
+	在他的启动类上面打上注解@EnableDiscoveryClient 这个注解会把RestController修饰的类注册到注册中心去
+	
+对于服务调用者
+	里面也有自己的service接口，但是这个接口继承提供者的service接口。
+	在他的service接口上打上注解@FeignClient(value="xxxx")   xxxx指的是服务提供者的properties文件中定义好的spring.application.name=xxxx 即指定服务名  
+	如此，在controller中，可以直接autowire 服务提供者接口泛型下的service，调用服务提供者的方法
+	
+	在他的启动类上面打上注解@EnableFeignClients、@EnableDiscoveryClient
+	EnableFeignClients在springboot中的注解片有解释
+  
+  查看两者的pom的依赖，调用者多了一个feign的jar依赖，该jar的作用就是提供声明式的服务调用。
+
