@@ -1,0 +1,8 @@
+@RequestBody注解
+
+	@requestBody注解常用来处理content-type不是默认的application/x-www-form-urlcoded编码的内容，比如说：application/json或者是application/xml等。一班情况下来说常用其来处理json类型。
+	
+	比如前端通过ajax传回一个json数据，我们在controller的接收参数前打上注解，即可将json的值赋予在参数上。如果我们刚好有一个类拥有json中的字段，那么可以直接传入该类并打上该注解。
+	
+	json中的key必须对应user中的属性名。
+	
