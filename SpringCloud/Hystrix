@@ -1,0 +1,5 @@
+Hystrix[熔断机制]
+
+熔断的监控现在有两款工具：Hystrix-dashboard和Turbine，Hystrix-dashboard是一款针对Hystrix进行实时监控的工具。
+
+Hystrix提供了熔断、隔离、Fallback、cache、监控等功能，能够在一个或多个依赖同时出现问题时保证系统依然可用。
