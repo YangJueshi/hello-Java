@@ -1,0 +1,20 @@
+OAuth2.0
+
+http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html
+	OAuth是一个关于授权的开放网络标准。
+	OAuth的思路：
+	在“客户端”与“服务提供商”之间，设置一个授权层。客户端使用令牌token登录授权层，用户可以在登录的时候，指定授权层令牌的权限范围和有效期。服务提供商根据令牌的权限范围和有效期想客户端开放用户存储的资料。
+	
+	B步骤是关键，用户怎样给客户端授权。
+客户端必须得到用户的授权，才能获得令牌，四种授权方式：
+	授权码模式authorization code
+	简化模式implicit
+	密码模式resource owner password credentials
+	客户端模式client credentials
+
+使用oauth2分三步：
+	配置资源服务器
+	配置认证服务器
+	配置spring security
+	https://blog.csdn.net/u013815546/article/details/76898524
+
