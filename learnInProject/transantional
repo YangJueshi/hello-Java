@@ -1,0 +1,97 @@
+在Kanban服务的代码中发现有如下显式指定rollbackFor的异常类并指明Exception.class：
+
+    @Override
+
+    @Transactional(rollbackFor = Exception.class)
+
+    public String saveOrUpdate(BoardPO board) {
+
+        BoardPO boardPO;
+
+        if (StringUtils.isBlank(board.getId())){
+
+            boardPO = boardRepository.save(board);
+
+        }else {
+
+            boardPO = update(board);
+
+        }
+
+        return boardPO.getId();
+
+}
+
+ 
+
+    @Override
+
+    @Transactional(rollbackFor = Exception.class)
+
+    public String deleteById(String id) {
+
+         BoardPO board = boardRepository.findById(id).orElse(null);
+
+         if (null == board){
+
+            throw new BusinessException(ErrorKey.BOARD_NOT_EXIT.getCode(),ErrorKey.BOARD_NOT_EXIT.getDes());
+
+         }
+
+         board.setStatus(Status.DELETE.getCode());
+
+         boardRepository.save(board);
+
+        List<String> ids = Arrays.asList(id);
+
+        ids =deleteList.deleteCardGroup(ids);
+
+        ids = (ids.isEmpty()) ? Collections.emptyList() : deleteList.deleteCard(ids);
+
+        if (null != ids && !ids.isEmpty()){
+
+            deleteList.deleteRecord(ids);
+
+        }
+
+         return "success";
+
+}
+
+ 
+
+调查了一下Spring源码中关于注解Transactional该字段的描述（注意标黄的部分）：
+
+    /**
+
+     * Defines zero (0) or more exception {@link Class classes}, which must be
+
+     * subclasses of {@link Throwable}, indicating which exception types must cause
+
+     * a transaction rollback.
+
+     * <p>By default, a transaction will be rolling back on {@link RuntimeException}
+
+     * and {@link Error} but not on checked exceptions (business exceptions). See
+
+     * {@link org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)}
+
+     * for a detailed explanation.
+
+     * <p>This is the preferred way to construct a rollback rule (in contrast to
+
+     * {@link #rollbackForClassName}), matching the exception class and its subclasses.
+
+     * <p>Similar to {@link org.springframework.transaction.interceptor.RollbackRuleAttribute#RollbackRuleAttribute(Class clazz)}.
+
+     * @see #rollbackForClassName
+
+     * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)
+
+     */
+
+Class<? extends Throwable>[] rollbackFor() default {};
+
+如文档所示，默认不配置该属性的话，只会在RuntimeException发生时才会进行回滚操作。如果方法内抛出受检异常或者自己继承Exception写的business Exception，则不会回滚数据库操作，会有很大的隐患。
+
+在虽然以上Kanban-Service显示指定rollbackFor = Exception.class的方法内都有抛出自定义的BusinessException，并且该类继承RuntimeException，但是因为我们在平时的业务代码中使用各种框架内封装的方法，抛出的异常类型有很大的不确定性，所以为了数据一致性安全，建议在所有Transactional注解上都显式的注明rollbackFor = Exception.class，这也是Idea推荐的做法。
