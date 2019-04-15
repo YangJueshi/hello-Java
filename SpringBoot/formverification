@@ -1,0 +1,28 @@
+表单验证
+
+springboot中可以通过注解来校验用户提交的数据的合理性
+
+
+举例：
+对于一个user类
+
+	@NotNull(message="用户名不能为空")
+	@Size(min =1,message="用户名不能为空")//字符串必须有此注解，否则无法验证传的值
+	private String name;
+	
+	@NotNull(message="年龄不能为空")
+	@Min(value =1,message="必须是成年人")
+	private Integer age;
+	
+	@NotNull(message="密码不能为空")
+	@Size(min =6,max=15,message="密码长度为6-15位")
+	private String password;
+
+然后在controller中，前台会传入一个user参数，我们在这个参数前打上注解@Valid 以此来表示该参数需要进行验证，同时参数中还需要有一个参数BindingResult bindingResult，这个参数包含错误信息，即User字段注解中的message。
+因为我们需要使用RESTful API，所以
+1、 当我们返回数据的时候，除了返回需要的数据，我们还要返回HttpStatus.ok【return new ResponseEntity<>(users, HttpStatus.OK);】或者有异常的话，除了返回异常信息，还要返回HttpStatus.BAD_REQUEST【return new ResponseEntity<>(bindingResult.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST);】
+2、 ResponseEntity<T>：响应实体，其中可包含数据与状态码，或只包含状态码
+
+还有很多注解，详见百度
+				
+	
