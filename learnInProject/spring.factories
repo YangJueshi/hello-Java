@@ -1,0 +1,14 @@
+spring.factories
+
+出现在resources中META-INF下的文件
+是一种非常解耦的扩展机制，实际上是仿照Java中的SPI扩展机制来实现的。
+Java SPI机制简介：
+	SPI全程Service Provider Interface. 多模块之间一般基于接口编程，模块之间不对实现类进行硬编码。为了实现在模块装配的时候能不在程序里动态指明，这就需要一种服务发现机制。SPI就是提供这样的一个机制。
+	其具体约定为：当服务的提供者，提供了服务接口的一种实现之后，在jar包的META-INF/services目录里同时创建一个以服务接口命名的文件。该文件里就是实现该服务接口的具体实现类。
+SpringFactories实现原理;
+	Spring-core包里定义了SpringFactoriesLoader类，这个类实现了检索META-INF/spring.factories文件，并获取指定接口的配置的功能。
+	spring.factories的是通过properties解析得到的，所以我们在写文件中的内容都是按照a=b这种方式配置的，配置多个实现类的话使用，分割。在获取类列表的基础上，还有进行实例化的过程。仅支持没有参数的构造函数。
+	
+
+在日常工作中，我们可能需要实现一些SDK或者Spring Boot Starter给别人使用，Factories机制可以让SDK或者Starter的使用只需要很少或者不需要进行配置，只需要在服务中引入我们的jar包。
+	
