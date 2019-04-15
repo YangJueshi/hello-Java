@@ -1,0 +1,5 @@
+FilterChain过滤链
+
+
+	作用： 当一个filter收到请求的时候，调用chain.doFilter才可以访问下一个匹配的filter，若当前的filter是最后一个filter，调用chain.doFilter才能访问目标资源。
+	多个filter的执行顺序是由web.xml中filter-mapping的位置决定的。
