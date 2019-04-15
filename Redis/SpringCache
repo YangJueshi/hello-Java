@@ -1,0 +1,40 @@
+SpringCache
+
+一、简单认识
+在java中，我们一般对调用方法进行缓存控制，比如我们调用"findUserById(Long id)"，那么我们应该在调用这个方法之前先从缓存中查找有没有，如果没有再调该方法，从数据库加载用户，然后添加到缓存中，下次调用时将会从缓存中获取到数据。
+从Spring 3.1起，提供了类似于@Transactional注解事务的注解Cache支持，并且提供了Cache抽象；在此之前一般都是通过AOP实现。
+使用SpringCache的好处:
+	提供基本的Cache抽象，方便切换各种底层Cache；
+	通过注解Cache可以实现类似于事务一样，缓存逻辑透明的应用到我们的业务代码上，且只需要更少的代码就可以完成；
+	提供事务回滚时也可以自动回滚缓存；
+	支持比较复杂的缓存逻辑。
+
+二、核心代码
+关于Cache的核心代码：
+	package org.springframework.cache;  
+	  
+	public interface Cache {  
+	    String getName();  //缓存的名字  
+	    Object getNativeCache(); //得到底层使用的缓存，如Ehcache  
+	    ValueWrapper get(Object key); //根据key得到一个ValueWrapper，然后调用其get方法获取值  
+	    <T> T get(Object key, Class<T> type);//根据key，和value的类型直接获取value  
+	    void put(Object key, Object value);//往缓存放数据  
+	    void evict(Object key);//从缓存中移除key对应的缓存  
+	    void clear(); //清空缓存  
+	  
+	    interface ValueWrapper { //缓存值的Wrapper  
+	        Object get(); //得到真实的value  
+	        }  
+	}  
+	
+我们在实际应用中会使用到多个Cache，所以Spring提供了CacheManager抽象，用于缓存的管理
+
+三、相关注解
+	1. 启动Cache注解
+		a. XML风格
+		<cache:annotation-driven cache-manager="cacheManager" proxy-target-class="true"/>  
+		b. 注解风格
+		@EnableCaching(proxyTargetClass = true)  
+		public class AppConfig implements CachingConfigurer { 
+	使用@EnableCaching启用Cache注解支持
+	实现CachingConfigurer，然后注入需要的cacheManager和keyGenerator(从spring4开始默认的是SimpleKeyGenerator)
