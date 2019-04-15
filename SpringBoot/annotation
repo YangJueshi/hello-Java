@@ -1,0 +1,35 @@
+SpringBoot注解
+
+@RequestMapping = @GetMapping/@PostMapping/@PutMapping
+
+SpringBoot的程序结构(图片无法显示)
+
+				
+
+1、对于repository类，我们只需要定义它的接口，springboot会自动定义其实现类。？？？
+2、在service层中，逻辑判断之后，如果需要抛出异常信息，我们可以自定义一个异常，返回值就new这个异常出来。
+3、在controller层中，例如在添加add方法中，有时候我们需要进行一个http状态的自定，所以我们可以在相关方法上打上注解@ResponseSrarus(HttpStatus.CREATED)，所有方法的默认的http返回状态是200，添加了这个注解可以将返回状态设置为201。这个注解里面的值有很多。
+
+@Configuration：
+	用于定义配置类，可替换xml配置文件，被注解的类内部包含一个或多个被@Bean注解的方法，这些方法将会被AnnotationConfigApplicationContext或AnnotationConfigWebApplicationContext类进行扫描，用于构建bean定义，初始化Spring容器。
+	[被@Configuration注解的配置类有如下要求]：
+		1、 不可以是final类型
+		2、 不可以是匿名类
+		3、 必须是静态类
+		
+@EnableAutoConfiguration：
+	能够自动配置spring的上下文，试图猜测和配置你想要的bean类，通常会自动根据你的类路径和你的bean定义自动配置
+	
+@ComponentScan：
+	会自动扫描指定包下的全部标有@Component的类，并注册成bean，也包括@Component下的子注解@Service,@Repository,@Controller
+	
+@EnableJpaRepositories：
+	用于Spring JPA的代码配置，用于取代xml形式的配置文件
+	
+@EnablefeignClients：
+	通过当前service服务要调用到其他service服务的api接口时，可通过这个注解。步骤如下：
+	在springboot的启动类上加上注解@EnablefeignClients
+	在service层上实现接口，
+(图片无法显示)
+	
+	
