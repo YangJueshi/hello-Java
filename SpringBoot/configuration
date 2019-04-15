@@ -1,0 +1,22 @@
+配置详解
+
+Spring Boot提供了很多默认配置，不需要进行显示声明，我们也可以自己进行配置。
+配置文件有.yml 和.properties
+
+1、 自定义配置
+	
+	我们将自定义的属性归类提取成一个属性类，类似于一个domain
+	只是 在该类上打上注解 @Component[将该类作为Bean注入Spring容器]@ConfigurationProperties(profix="book")[配置文件中book前缀的属性将自动绑定到本类对应的字段]
+	
+	类定义完成后，就可以在配置文件中增加项定义的配置
+	
+	如此一来，当我们需要使用book类时，我们通过autowire注入book对象，通过get方法能自动赋值配置中的值。
+	
+2、 另外
+	Spring Boot提供了很多生成随机数的工具，只需要将配置中的值改写成例如 ${random.value}\${random.int}就能赋值随机字符串/整数
+
+【适配多环境】
+	通常在一个实际的项目中，会有开发环境、生产环境等，并且在不同的环境中，对应的配置也会有所不同，所以需要针对不同的环境编写不同的配置文件。
+	公用的配置就直接写在application.yml中，在他同级的地方，根据不同的环境，新增不同的配置文件，例如：application-dev.yml[开发环境配置文件]、application-pro.yml[生产环境配置文件]
+	
+	通过在application.yml使用spring.profiles.active：dev或者pro等 配置，可以使用指定环境的配置文件
