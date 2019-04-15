@@ -1,0 +1,3 @@
+equalsIgnoreCase
+
+Public boolean equalsIgnoreCase(String, another String)  将此String与另一个String进行比较，不考虑大小写。
