@@ -1,0 +1,15 @@
+SpringBoot中注解
+
+
+	@Id
+		主键，也可自动生成一个，并且插入时效率远高于自己设置主键
+	@Document
+		标注在实体类上，类似于entity注解，标明由mongo来维护该表。()括号里可以写mongodb对应的collection名，默认的是user collection
+	@Indexed
+		声明该字段需要加索引，加了索引以该字段为条件检索，速度提高。如果索引数组，会索引数组中的每一个元素。
+	@CompoundIndex
+		复合索引，@CompoundIndexes({@CompoundIndex(name="xxx",def="{'lastName':1,'age':-1}")})  如上写法，lastName和age将作为复合索引，数字参数指定索引的方向，1为正序，-1为倒序，方便分组和排序操作
+	@Field
+		字段，不加的话默认以参数名为列名，加上括号里面写名字，表示存储到里面的字段区别名
+	@Transient
+		被该注解标注的，将不会被录入到数据库中，只作为普通的javaBean属性
