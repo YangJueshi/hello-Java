@@ -1,0 +1,78 @@
+初步认识
+
+Swagger是一个规范和完整的框架 https://blog.csdn.net/qq_32446775/article/details/75546553
+一、作用：1、接口的文档在线自动生成
+	           2、功能测试
+	
+二、maven中的依赖
+	<dependency>
+	    <groupId>io.springfox</groupId>
+	    <artifactId>springfox-swagger2</artifactId>
+	    <version>2.2.2</version>
+	</dependency>
+	<dependency>
+	    <groupId>io.springfox</groupId>
+	    <artifactId>springfox-swagger-ui</artifactId>
+	    <version>2.2.2</version>
+	</dependency>
+	
+三、在Application.java同级创建swagger2的配置类Swagger2[名字自取]
+	通过@Configuration注解让Spring来加载该类配置
+	通过@EnableSwagger2注解来启动Swagger2
+	通过@ComponentScan("com.ithzk.swagger.controller")注解扫描指定的包？？？
+  
+  =============
+  基础的配置是对整个API文档的描述以及一些全局性的配置，对所有接口起作用。
+	在这个配置类里面，实例化了一个Docket对象，这个对象主要包括三个方面的信息：
+		1. 整个API的描述信息，即ApiInfo对象包括的信息，这部分信息会在页面上展示
+		2. 指定生成API文档的包名
+		3. 指定生成API的路径。按路径生成API可支持四中模式，可以参考其源码
+		
+		
+		从源码中可以看出，Swagger总共支持任何路径都生成、任何路径都不生成以及正则匹配[eg:PathSelectors.regex("/rest/.*")]和ant模式匹配四中方式，我们常用前三种
+
+  =============
+  
+  
+	相关代码 https://blog.csdn.net/sanyaoxu_2/article/details/80555328
+	
+	
+	在完成了上面的配置后，其实已经可以生产文档内容。通常我们还需要自己增加一些说明来丰富文档内容。
+	@Api：用在类上，说明该类的作用。
+	@ApiOperation：注解来给API增加方法说明。
+	@ApiImplicitParams : 用在方法上包含一组参数说明。
+	@ApiImplicitParam：用来注解来给方法入参增加说明。
+	@ApiResponses：用于表示一组响应
+	@ApiResponse：用在@ApiResponses中，一般用于表达一个错误的响应信息
+	    |   code：数字，例如400
+	    |   message：信息，例如"请求参数没填好"
+	    |   response：抛出异常的类   
+	@ApiModel：描述一个Model[用对象来接收参数]的信息（一般用在请求参数无法使用@ApiImplicitParam注解进行描述的时候）
+	    |   @ApiModelProperty：描述一个model的属性
+	 
+	
+	注意：@ApiImplicitParam的参数说明：
+	paramType：指定参数放在哪个地方	header：请求参数放置于Request Header，使用@RequestHeader获取
+		query：请求参数放置于请求地址，使用@RequestParam获取
+		path：（用于restful接口）-->请求参数的获取：@PathVariable
+		body：（不常用）
+		form：（不常用）
+	name：参数名	 
+	dataType：参数类型	 
+	required：参数是否必须传入	true | false
+	value：说明参数的意思	 
+	defaultValue：参数的默认值	 
+	
+	【两个注意点：】
+	1、 paramType会直接影响程序的运行期，如果paramType与方法参数的获取使用的注解不一致，会直接影响到参数的接收
+	
+	
+	2、 Controller中定义的方法必须在@RequestMapper中显示的指定RequestMethod类型，否则SwaggerUi会默认为全类型皆可访问，API里表中会生成多条项目。RequestMethod==》method=RequestMethod.GET等
+
+
+@RequestParam和@PathVariable的区别：
+
+@RequestParam  使用来映射请求参数，里面的字段required表示是否必须，默认为true，defaultValue请求参数的默认值。
+使用了这个注解，url的模式是……?username=xx&age=20
+@PathVariable  使用这个注解的时候，我们的@RequestMapping的模式是……/user/{username}
+此时的url的模式是/user/michelle
