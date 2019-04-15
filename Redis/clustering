@@ -1,0 +1,21 @@
+redis集群
+
+简单介绍：
+	无中心结构，集群预分好16384个slot[0,16383]，当需要在集群中放置一个key-value数据时，会根据CRC16(key) mod 16384的值，来决定将key放到哪个slot中，查找指定的值，也是通过这么一个算法来确定其位置。
+
+刚开始确定集群中的节点个数后，之后新添节点，那么会从之前的各个节点的前面部分各拿取一部分slot到新的节点上。
+
+集群中至少应该有奇数个节点，至少有三个节点，主从节点加起来就一共有6个节点。
+
+集群的搭建：
+
+		http://www.cnblogs.com/lykxqhh/p/5690923.html
+
+
+redis-trib.rb 是官方提供的管理redis集群的工具，集成在src目录下，是用ruby语言编写的，所以需要ruby语言环境的支持
+
+Jedis连接集群版Redis：
+	https://blog.csdn.net/qq_39056805/article/details/80656811 、https://blog.csdn.net/csdn_gia/article/details/55803791
+
+在公司微服务代码中看到配置工厂 package com.msl.common.utilities.redis; ，查到类似的文件： https://blog.csdn.net/qq_37580283/article/details/80941762
+但是公司貌似没有用redis集群？？？
