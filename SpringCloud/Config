@@ -1,0 +1,12 @@
+Spring Cloud Config[配置中心]
+
+解决分布式系统的配置管理方案。包含了Client和Server两个部分。Server端将配置文件服务化，Client获取内容并初始化自己的应用。
+
+如果服务运行期间改变配置文件，服务是不会得到最新的配置信息，需要解决这个问题就需要引入Refresh。可以在服务的运行期间重新加载配置文件。
+
+建议集群，来支持配置中心高可用性。
+
+对于上面的refresh，多个服务的更新配置的话，手动refresh工作量大，所以使用Spring Cloud Bus
+
+Spring Cloud Bus将分布式的节点用轻量的消息代理连接起来。可以用于广播(这是一个动词…) 配置文件的更改或者服务之间的通讯，也可以用于监控。
+https://blog.csdn.net/cn_hhaip/article/details/80629248
