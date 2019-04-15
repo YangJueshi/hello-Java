@@ -1,0 +1,8 @@
+LoggerFactory.getLogger(String name)用法
+
+
+	在日志输出的时候，可以打印出日志信息所在的类
+	Logger logger = LoggerFactory.getLogger(com.User.class);
+       logger.debug("用户信息");
+       将会打印出: com.User : 用户信息
+	
