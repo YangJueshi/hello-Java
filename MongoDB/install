@@ -1,0 +1,27 @@
+安装
+
+
+命令行下运行MongoDB服务器：
+	C:\mongodb\bin\mongod --dbpath c:\data\db
+
+我们可以在命令行中运行来连接上MongoDB
+	C:\mongodb\bin\mongo.exe
+
+配置服务
+创建数据库和日志文件的目录
+mkdir c:\data\db
+mkdir c:\data\log
+
+创建配置文件，必须设置systemLog.path参数，包括一些附加的配置选项更好
+例如，创建一个配置文件位于 C:\mongodb\mongod.cfg，其中指定 systemLog.path 和 storage.dbPath。具体配置内容如下：
+	systemLog:
+    destination: file
+    path: c:\data\log\mongod.log
+storage:
+    dbPath: c:\data\db
+
+安装服务
+通过执行mongod.exe，使用--install选项来安装服务，使用--config选项来指定之前创建的配置文件。
+	C:\mongodb\bin\mongod.exe --config "C:\mongodb\mongod.cfg" --install
+
+
