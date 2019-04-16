@@ -5,6 +5,8 @@
 	希望某个bean只有在特定的条件下才创建。
 	3. 处理自动装配的歧义性
 	一个借口有三个实现类，都创建了bean交给了spring管理，在注入时注入的是父类接口，此时spring报错，无法精确到准确的bean。解决方案一般有两种：将可选bean中的某一个设为首选的bean；使用限定符来帮助spring将可选的bean的范围缩小到只有一个bean
+	4. bean的作用域
+	在默认情况下，Spring应用上下文中所有bean都是单例的。Spring定义了多种作用域，可以基于这些作用域创建bean。
 ======================================================
 1、环境与profile
 Spring提供了bean profile的功能。
@@ -34,3 +36,9 @@ Spring提供了bean profile的功能。
 	@Primary注解用在配置bean上，或者在XML配置中bean元素中有primary属性设置为true。
 	2. 限定自动装配的bean
 	@Qualifier注解用在注入bean上，里面的值输入想要注入的确定的子类。
+======================================================
+4. bean的作用域
+	1. 单例(Singleton)：
+	2. 原型(Prototype)：
+	3. 会话(Session)：
+	4. 请求(Request)：
