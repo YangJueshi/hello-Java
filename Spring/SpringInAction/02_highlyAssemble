@@ -39,6 +39,14 @@ Spring提供了bean profile的功能。
 ======================================================
 4. bean的作用域
 	1. 单例(Singleton)：
-	2. 原型(Prototype)：
+	默认，如果要使用其他作用域，需要使用@Scope注解，可以与@Component或@Bean一起使用。里面的属性值为：类.常量 来进行定义。使用XML配置也是使用bean元素的scope属性来设置。
+	2. 原型(Prototype)：ConfigurableBeanFactory.SCOPE_PROTOTYPE
 	3. 会话(Session)：
 	4. 请求(Request)：
+	
+	1. 使用会话和请求作用域
+	购物车bean来说，会话作用域是最为合适的，因为它与给定的用户关联性最大。
+	指定会话作用域：@Scope(value=WebApplicationContext.SCOPE_SESSION, proxyMode=ScopedProxyMode.INTERFACES或者TARGET_CLASS)第二个属性解决了将会话或请求作用域的bean注入到单例bean中所遇到的问题。
+	如果是XML的配置，bean元素中只有scope的属性，对于代理模式的设置，主要在bean元素中添加一个Spring aop命名空间的新元素：<aop:scoped-proxy proxy-target-class="false" />XML的配置是默认的代理类，我们设置后面的属性false，让他生成基于接口的代理。
+======================================================
+	
