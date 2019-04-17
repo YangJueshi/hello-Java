@@ -49,4 +49,22 @@ Spring提供了bean profile的功能。
 	指定会话作用域：@Scope(value=WebApplicationContext.SCOPE_SESSION, proxyMode=ScopedProxyMode.INTERFACES或者TARGET_CLASS)第二个属性解决了将会话或请求作用域的bean注入到单例bean中所遇到的问题。
 	如果是XML的配置，bean元素中只有scope的属性，对于代理模式的设置，主要在bean元素中添加一个Spring aop命名空间的新元素：<aop:scoped-proxy proxy-target-class="false" />XML的配置是默认的代理类，我们设置后面的属性false，让他生成基于接口的代理。
 ======================================================
-	
+5. 运行时注入
+	我们之前学的值得注入都是硬编码，有时候我们希望让这些值在运行时再确定：
+		属性占位符(Property placeholder)
+			将值声明在一个properties文件中，在Spring的配置类上声明属性源@PropertySource("classpath:/../../…properties")，在类里autowired Environment对象，在进行值得注入时就通过Environment对象调用getProperty()方法来获取properties文件中声明好的值。
+			【解析属性占位符】
+			Spring一直支持将属性定义到外部的属性文件中，并使用占位符值将其插入到Springbean中，在Spring装配中，占位符的形式为使用"${…}"包装的属性名称。
+			在硬编码情况下我们可以使用@Value("${…}")，它的使用方式与@Autowired注解非常相似。
+			使用占位符我们必须要配置一个PropertyPlaceholderConfigurer bean或者PropertySourcePlaceholderConfigurer bean(推荐)。
+			在XML配置中<context:property-placeholder />
+		Spring表达式语言(SpEL)：更为通用。
+			特性：使用bean的ID来引用bean；
+				  调用方法和访问对象的属性；
+				  对值进行算数、关系和逻辑运算；
+				  正则表达式匹配；
+				  集合操作。
+			表达式要放在#{…}里。
+			样例：#{T(System).currentTimeMillis()}  它的最终结果是计算表达式的那一刻当前时间的毫秒数。T()将括号里的类视为Java中对应的类型，因此可以调用其static修饰的currentTimeMillis()方法。
+			#{sgtPeppers.artist}表示得到ID为sgtPeppers的bean的artist属性。
+			#{systemProperties['disc.title']}通过systemProperties对象引用系统属性。
